@@ -10,7 +10,12 @@ const gameConfig = {
   parent: "game-container",
 
   backgroundColor: "#000000",
-
+  physics: {
+  default: "arcade",
+  arcade: {
+    debug: false,
+  },
+},
   scene: [BootScene],
 };
 
