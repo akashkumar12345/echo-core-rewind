@@ -7,7 +7,9 @@ const gameConfig = {
   width: 1280,
   height: 720,
 
-  backgroundColor: "#111111",
+  parent: "game-container",
+
+  backgroundColor: "#000000",
 
   scene: [BootScene],
 };
