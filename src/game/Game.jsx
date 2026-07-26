@@ -1,22 +1,29 @@
+import { useEffect, useRef } from "react";
+import Phaser from "phaser";
 import gameConfig from "./config/gameConfig";
 
 function Game() {
+  const gameRef = useRef(null);
+
+  useEffect(() => {
+    const game = new Phaser.Game({
+      ...gameConfig,
+      parent: gameRef.current,
+    });
+
+    return () => {
+      game.destroy(true);
+    };
+  }, []);
+
   return (
     <div
+      ref={gameRef}
       style={{
-        width: gameConfig.width,
-        height: gameConfig.height,
-        backgroundColor: gameConfig.backgroundColor,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        color: "#ffffff",
-        fontSize: "32px",
-        fontWeight: "bold",
+        width: "100%",
+        height: "100%",
       }}
-    >
-      Echo Core: Rewind
-    </div>
+    />
   );
 }
 
