@@ -1,71 +1,69 @@
 import Phaser from "phaser";
-
+import Player from "../entities/Player";
 export default class MainScene extends Phaser.Scene {
-  constructor() {
-    super("MainScene");
-  }
+    constructor() {
+        super("MainScene");
+    }
 
-create() {
-  // World size
-  this.worldWidth = 2500;
-  this.worldHeight = 1500;
+    create() {
+        // World size
+        this.worldWidth = 2500;
+        this.worldHeight = 1500;
 
-  this.cameras.main.setBackgroundColor("#1e1e1e");
+        this.cameras.main.setBackgroundColor("#1e1e1e");
 
-  // Set world bounds
-  this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+        // Set world bounds
+        this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
-  // Player
-  this.player = this.add.rectangle(200, 200, 50, 50, 0x3498db);
+        // Player
 
-  // Enable physics
-  this.physics.add.existing(this.player);
+        // Enable physics
 
-  this.player.body.setCollideWorldBounds(true);
+        this.player = new Player(this, 200, 200);
+        // Camera
+        this.cameras.main.setBounds(
+            0,
+            0,
+            this.worldWidth,
+            this.worldHeight
+        );
 
-  // Camera
-  this.cameras.main.setBounds(
-    0,
-    0,
-    this.worldWidth,
-    this.worldHeight
-  );
+        this.cameras.main.startFollow(this.player, true);
 
-  this.cameras.main.startFollow(this.player, true);
+        this.cursors = this.input.keyboard.createCursorKeys();
 
-  this.cursors = this.input.keyboard.createCursorKeys();
+        this.keys = this.input.keyboard.addKeys({
+            W: Phaser.Input.Keyboard.KeyCodes.W,
+            A: Phaser.Input.Keyboard.KeyCodes.A,
+            S: Phaser.Input.Keyboard.KeyCodes.S,
+            D: Phaser.Input.Keyboard.KeyCodes.D,
+        });
+        this.drawGrid();
 
-  this.keys = this.input.keyboard.addKeys({
-    W: Phaser.Input.Keyboard.KeyCodes.W,
-    A: Phaser.Input.Keyboard.KeyCodes.A,
-    S: Phaser.Input.Keyboard.KeyCodes.S,
-    D: Phaser.Input.Keyboard.KeyCodes.D,
-  });
+        // this.speed = 250;
+    }
 
-  this.speed = 250;
+ update() {
+    this.player.move(this.keys, this.cursors);
 }
 
-update() {
-  const body = this.player.body;
+    drawGrid() {
+    const graphics = this.add.graphics();
 
-  body.setVelocity(0);
+    graphics.lineStyle(1, 0x2c2c2c, 1);
 
-  if (this.keys.A.isDown || this.cursors.left.isDown) {
-    body.setVelocityX(-this.speed);
-  }
+    const gridSize = 64;
 
-  if (this.keys.D.isDown || this.cursors.right.isDown) {
-    body.setVelocityX(this.speed);
-  }
+    for (let x = 0; x <= this.worldWidth; x += gridSize) {
+        graphics.moveTo(x, 0);
+        graphics.lineTo(x, this.worldHeight);
+    }
 
-  if (this.keys.W.isDown || this.cursors.up.isDown) {
-    body.setVelocityY(-this.speed);
-  }
+    for (let y = 0; y <= this.worldHeight; y += gridSize) {
+        graphics.moveTo(0, y);
+        graphics.lineTo(this.worldWidth, y);
+    }
 
-  if (this.keys.S.isDown || this.cursors.down.isDown) {
-    body.setVelocityY(this.speed);
-  }
-
-  body.velocity.normalize().scale(this.speed);
+    graphics.strokePath();
 }
 }
